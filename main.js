@@ -49,6 +49,8 @@ const peace = document.querySelector('#peace')
 const hangLoose = document.querySelector('#hang-loose')
 const fu = document.querySelector('#fu')
 const vulcanSalute = document.querySelector('#vulcan-salute')
+const byeButton = document.querySelector('#bye');
+const bbuttn = document.getElementById('bbuttn');
 
 const centerThresholdX = 10
 const centerThresholdY = 20
@@ -58,7 +60,44 @@ const getRandomPosition = () => {
   const y = Math.random() * (100 - centerThresholdY * 2) + centerThresholdY
   return { x, y }
 }
+bbuttn.addEventListener('click', () => {
+    // Create a GSAP timeline
+    const tl = gsap.timeline();
 
+    // Initialize colors
+    let bgColor = new THREE.Color(0x000000);
+    let handColor = new THREE.Color(0xffffff);
+    let shirtColor = new THREE.Color(0x000000);
+    let vestColor = new THREE.Color(0xffffff);
+
+    // Add animations to the timeline for sign gestures 1 to 10
+    for (let i = 1; i <= 10; i++) {
+        tl.to(PARAMS, {
+            duration: 0,
+            // Set properties based on the current iteration
+            bg: bgColor,
+            hand: handColor,
+            shirt: shirtColor,
+            vest: vestColor,
+            wrist: 45 * i, // Example: Rotate wrist by 45 degrees for each gesture
+
+            thumb: 10 * i, // Example: Rotate thumb by 10 degrees for each gesture
+            index: 20 * i, // Example: Rotate index finger by 20 degrees for each gesture
+            middle: 30 * i, // Example: Rotate middle finger by 30 degrees for each gesture
+            ring: 40 * i, // Example: Rotate ring finger by 40 degrees for each gesture
+            pinky: 50 * i, // Example: Rotate pinky finger by 50 degrees for each gesture
+        }, `+=${0.5}`) // Add a delay of 0.5 seconds between each animation
+        .call(() => {
+            console.log(`Gesture ${i} completed`);
+            // You can perform additional actions after each gesture
+        });
+    }
+
+    // Additional animations or callbacks can be added here
+
+    // Play the timeline
+    tl.play();
+});
 const getRandomRotation = () => {
   return Math.floor(Math.random() * 91) - 45;
 }
@@ -78,6 +117,7 @@ placeButtonRandomly(peace)
 placeButtonRandomly(hangLoose)
 placeButtonRandomly(fu)
 placeButtonRandomly(vulcanSalute)
+placeButtonRandomly(byeButton)
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -572,6 +612,43 @@ const setBones = () => {
       })
       .play()
   })
+  
+  byeButton.addEventListener('click', () => {
+    const tlBye = GSAP.timeline();
+    let bgColor = new THREE.Color(0x000000);
+    let handColor = new THREE.Color(0xffffff);
+    let shirtColor = new THREE.Color(0x000000);
+    let vestColor = new THREE.Color(0xffffff);
+
+    tlBye
+        .to(PARAMS, {
+            duration: 0,
+            bg: 0x000000, hand: 0xffffff, shirt: 0x000000, vest: 0xffffff,
+            wrist: 0,
+            thumb: 0, index: 0, middle: 0, ring: 0, pinky: 0,
+            thumbz: 0, indexz: 0, middlez: 0, ringz: 0, pinkyz: 0,
+        }, 'same')
+        .to(wristRotation, { duration: 0.5, x: 0 }, 'same')
+        .to(thumbRotation, { duration: 0.5, x: 0 }, 'same')
+        .to(indexRotation, { duration: 0.5, x: 0 }, 'same')
+        .to(middleRotation, { duration: 0.5, x: 0 }, 'same')
+        .to(ringRotation, { duration: 0.5, x: 0 }, 'same')
+        .to(pinkyRotation, { duration: 0.5, x: 0 }, 'same')
+        .to(thumbRotation, { duration: 0.5, z: 0 }, 'same')
+        .to(indexRotation[0], { duration: 0.5, z: 0 }, 'same')
+        .to(middleRotation[0], { duration: 0.5, z: 0 }, 'same')
+        .to(ringRotation[0], { duration: 0.5, z: 0 }, 'same')
+        .to(pinkyRotation[0], { duration: 0.5, z: 0 }, 'same')
+        .to(scene.background, { duration: 0.5, r: bgColor.r, g: bgColor.g, b: bgColor.b }, 'same')
+        .to(handMaterial.color, { duration: 0.5, r: handColor.r, g: handColor.g, b: handColor.b }, 'same')
+        .to(handMaterial.emissive, { duration: 0.5, r: handColor.r, g: handColor.g, b: handColor.b }, 'same')
+        .to(shirtMaterial.color, { duration: 0.5, r: shirtColor.r, g: shirtColor.g, b: shirtColor.b }, 'same')
+        .to(vestMaterial.color, { duration: 0.5, r: vestColor.r, g: vestColor.g, b: vestColor.b }, 'same')
+        .call(() => {
+            pane.refresh();
+        })
+        .play();
+})
 }
 
 /**
